@@ -1,0 +1,98 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>MSD &middot; 3004 Washington &mdash; Schedule</title><style>@media print{[data-msd-nav]{display:none!important}}</style></head><body><div data-msd-nav><div style="max-width:760px;margin:0 auto;padding:10px 12px 2px;display:flex;gap:6px;font-family:-apple-system,'Segoe UI',Arial,sans-serif"><a href="index.html" style="flex:1;text-align:center;text-decoration:none;font-size:12.5px;font-weight:800;padding:9px 6px;border-radius:9px;background:#fff;color:#334;border:1.5px solid #cfd4db">To-Do</a><a href="schedule.html" style="flex:1;text-align:center;text-decoration:none;font-size:12.5px;font-weight:800;padding:9px 6px;border-radius:9px;background:#1F283A;color:#fff;border:1.5px solid #1F283A">Schedule</a><a href="specs.html" style="flex:1;text-align:center;text-decoration:none;font-size:12.5px;font-weight:800;padding:9px 6px;border-radius:9px;background:#fff;color:#334;border:1.5px solid #cfd4db">Specs</a></div></div><div id="app"></div>
+<style>
+:root{color-scheme:light}body{background:#fff}
+#app{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A;max-width:820px;margin:0 auto;padding:0 12px 60px;}
+.hdr{background:#1F283A;color:#fff;border-radius:0 0 14px 14px;padding:16px 16px 14px;margin:0 -12px 12px;}
+.hdr h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.2px}
+.hdr .sub{opacity:.85;font-size:12.5px;margin-top:3px}
+.count{display:inline-block;margin-top:9px;background:#C0392B;color:#fff;font-weight:800;font-size:13px;padding:5px 11px;border-radius:999px}
+.chips{position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);padding:9px 0;margin:0 0 6px;z-index:5;display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid #eee}
+.chip{border:1.5px solid #cfd4db;background:#fff;color:#333;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;user-select:none}
+.chip.on{background:#1F283A;color:#fff;border-color:#1F283A}
+.wk{margin:14px 0 6px}
+.wk h2{font-size:13px;font-weight:800;color:#1F283A;margin:0 0 2px;display:flex;justify-content:space-between;align-items:baseline;cursor:pointer}
+.wk h2 .rng{font-weight:600;color:#8A8F98;font-size:11.5px}
+.task{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid #e9ebee;border-left-width:5px;border-radius:9px;margin:6px 0;background:#fff}
+.task .date{min-width:58px;font-weight:800;font-size:12.5px;color:#1F283A;line-height:1.25}
+.task .date small{display:block;font-weight:600;color:#9aa0a8;font-size:10.5px}
+.task .body{flex:1}
+.task .name{font-size:13.5px;font-weight:600;line-height:1.3}
+.task .meta{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{font-size:10.5px;font-weight:800;color:#fff;padding:2px 7px;border-radius:5px;letter-spacing:.2px}
+.own{font-size:11px;font-weight:800;padding:2px 7px;border-radius:5px;background:#eef0f3;color:#333}
+.tent{font-size:10.5px;font-weight:800;color:#B5852A}
+.mile{border-left-color:#C0392B!important;background:#fff6f5}
+.mile .name{font-weight:800;color:#C0392B}
+.gate{border-left-color:#B5852A!important;background:#fffdf5}
+.legend{margin-top:20px;font-size:11.5px;color:#555;line-height:1.7;border-top:1px solid #eee;padding-top:10px}
+.note{font-size:11.5px;color:#8A6D1B;background:#FFF9E8;border:1px solid #F0E4B8;border-radius:8px;padding:8px 10px;margin:8px 0}
+</style>
+<script>
+const PH={PRIORITY:"#C0392B","PRE-PAINT":"#8E6FB0",PAINT:"#E08E45","POST-TAPE":"#B5852A","POST-PAINT":"#3C7A5A",STONE:"#5B7FB0",FLOORING:"#7A5C9E",CLEAN:"#4FA3A3","CLOSE-OUT":"#555F6E",EXTERIOR:"#777",MILESTONE:"#C0392B"};
+function grp(o){if(o==="Jhon")return"Jhon";if(o==="Pat")return"Pat";if(o==="General")return"General";if(o==="Milestone")return"Milestone";return"Subs";}
+// task: [name, owner, phase, start"m/d", finish, tentative]
+const T=[
+["Fireplace prep &mdash; expose niche junction box, cover fireplace","Jhon","PRIORITY","11/4","11/4",false],
+["Mark master-closet lighting locations","Jhon","PRIORITY","11/4","11/4",false],
+["Verify kitchen island outlets (island + countertops)","Jhon","PRIORITY","11/4","11/5",false],
+["Exterior stucco repair &mdash; BEFORE the cold","General","EXTERIOR","11/5","11/12",true],
+["Painting &mdash; main (the backbone)","Subs","PAINT","11/4","11/13",true],
+["Countertop surface prep","General","PRIORITY","11/7","11/9",false],
+["Countertop install (kitchen)","Subs","PRIORITY","11/9","11/9",true],
+["Aaron &mdash; deliver bottom + 2nd-course stones","Subs","STONE","11/9","11/10",true],
+["AV Crafters &mdash; final trim","Subs","POST-PAINT","11/10","11/10",true],
+["Glass install","Subs","POST-PAINT","11/12","11/14",true],
+["Ciro &mdash; review templates + set fireplace base (first 2 courses)","Subs","STONE","11/13","11/13",true],
+["Laundry-room paint &mdash; LAST","Subs","PAINT","11/12","11/13",true],
+["PAINTERS OFF THE JOB &mdash; gate for all POST-PAINT work","Subs","POST-TAPE","11/13","11/13",true],
+["Ciro &mdash; remaining stone courses","Subs","STONE","11/16","11/18",true],
+["Matt Herbrook &mdash; cabinets / millwork (drawers, short cabinet)","Subs","POST-PAINT","11/16","11/18",true],
+["POST-PAINT trades &mdash; detectors, plates, can trim, 3-ways, thermostats, A/C trim, outlet covers","General","POST-PAINT","11/16","11/20",false],
+["Appliances install (kitchen)","Subs","POST-PAINT","11/17","11/17",false],
+["Cleaners &mdash; rough clean","Subs","CLEAN","11/18","11/18",false],
+["Wallpaper","Subs","POST-PAINT","11/19","11/21",true],
+["Carpet &mdash; basement, master, closets (~1 wk after paint)","Subs","FLOORING","11/20","11/21",true],
+["Load the under-stair storage &mdash; ONLY after carpet","General","FLOORING","11/23","11/23",true],
+["Front door final &mdash; sweeps, insulation strips, swing","General","POST-PAINT","11/20","11/24",false],
+["Punch / final details","General","CLOSE-OUT","11/23","11/25",false],
+["Final clean","Subs","CLEAN","11/28","11/30",false],
+["MOVE-IN &mdash; Jen & Pat (no matter what)","Milestone","MILESTONE","12/1","12/1",false],
+];
+const WEEKS=[
+ {t:"This week",r:"Wed Nov 4 &ndash; Sun Nov 8",lo:[11,4],hi:[11,8]},
+ {t:"Next week",r:"Mon Nov 9 &ndash; Sun Nov 15",lo:[11,9],hi:[11,15]},
+ {t:"Week of the 16th",r:"Mon Nov 16 &ndash; Sun Nov 22",lo:[11,16],hi:[11,22]},
+ {t:"Close-out &rarr; move-in",r:"Mon Nov 23 &ndash; Tue Dec 1",lo:[11,23],hi:[12,1]},
+];
+function md(s){const p=s.split("/").map(Number);return p[0]*100+p[1];}
+let FILTER="All";
+function render(){
+ const app=document.getElementById("app");
+ let h=`<div class="hdr"><h1>3004 Washington &mdash; Field Schedule</h1><div class="sub">Updated Nov 4, 2026 &middot; read-only &middot; built & maintained by MSD</div><div class="count">27 days to move-in (Dec 1)</div></div>`;
+ h+=`<div class="chips">`+["All","Jhon","Pat","General","Subs"].map(f=>`<span class="chip ${f===FILTER?'on':''}" onclick="setF('${f}')">${f}</span>`).join("")+`</div>`;
+ h+=`<div class="note">&#9670; = tentative date. The big pivot is <b>PAINTERS OFF THE JOB</b> (assumed Fri 11/13) &mdash; everything POST-PAINT keys off it. Thanksgiving 11/26.</div>`;
+ WEEKS.forEach((w,wi)=>{
+   const lo=w.lo[0]*100+w.lo[1], hi=w.hi[0]*100+w.hi[1];
+   let rows=T.filter(t=>{const s=md(t[3]); return s>=lo&&s<=hi && (FILTER==="All"||grp(t[1])===FILTER||t[1]==="Milestone");});
+   if(!rows.length) return;
+   h+=`<div class="wk"><h2 onclick="tog(${wi})"><span>${w.t}</span><span class="rng">${w.r}</span></h2><div id="wk${wi}">`;
+   rows.forEach(t=>{
+     const[name,owner,phase,s,f,tent]=t;
+     const mile=phase==="MILESTONE", gate=name.startsWith("PAINTERS OFF");
+     const col=PH[phase]||"#888";
+     const dd = s===f?`${s}`:`${s}<small>&rarr; ${f}</small>`;
+     h+=`<div class="task ${mile?'mile':''} ${gate?'gate':''}" style="border-left-color:${col}">
+       <div class="date">${dd}</div>
+       <div class="body"><div class="name">${tent?'&#9670; ':''}${name}</div>
+       <div class="meta"><span class="own">${owner}</span><span class="badge" style="background:${col}">${phase}</span>${tent?'<span class="tent">tentative</span>':''}</div></div></div>`;
+   });
+   h+=`</div></div>`;
+ });
+ h+=`<div class="legend"><b>Legend:</b> colored left-edge = phase. Owner tag shows who. &#9670; tentative. Red = milestone, amber = the paint gate.<br>Questions on the plan &rarr; text Pat. John: this is read-only &mdash; work your to-do list, this shows how it all fits together.</div>`;
+ app.innerHTML=h;
+}
+function setF(f){FILTER=f;render();}
+function tog(i){const e=document.getElementById("wk"+i);if(e)e.style.display=e.style.display==="none"?"":"none";}
+render();
+</script>
+</body></html>
